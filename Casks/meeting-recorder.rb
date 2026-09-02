@@ -1,6 +1,6 @@
 cask "meeting-recorder" do
-  version "0.6.0"
-  sha256 "542be2e88e5e30736f68354bfdcb8b37ce6a4eef26ded05e6bd015d1dc1316e2"
+  version "0.6.1"
+  sha256 "364a8f8077f70703f42417847a37af9bcd9d286b1f1574327b2dd8684f9a63c0"
 
   url "https://github.com/chetangoel01/meeting-recorder/releases/download/v#{version}/MeetingRecorder-#{version}.dmg"
   name "Meeting Recorder"
