@@ -1,6 +1,6 @@
 cask "cooler" do
-  version "1.0.1"
-  sha256 "c8955169b7acfcf704da393572dc1c6aa2b2355f460ff596ab29a479a0b38e78"
+  version "1.0.2"
+  sha256 "86c3cd97258eb927318d1ee46d801e6d593a5010ae2367adb2f5b132ae80af60"
 
   url "https://github.com/chetangoel01/cooler/releases/download/v#{version}/Cooler-#{version}.dmg"
   name "Cooler"
@@ -19,23 +19,25 @@ cask "cooler" do
 
   app "Cooler.app"
 
+  # Steps run with a temporary HOME, so user paths use the :home base, never "~".
   postflight_steps do
     # Installs or upgrades the root controller, keeping the selected profile.
     run "{{appdir}}/Cooler.app/Contents/Resources/install-daemon.sh", sudo: true
-    mkdir_p "~/Library/Application Support/SwiftBar/Plugins"
-    mkdir_p "~/Library/LaunchAgents"
+    mkdir_p "Library/Application Support/SwiftBar/Plugins", base: :home
+    mkdir_p "Library/LaunchAgents", base: :home
     copy "{{appdir}}/Cooler.app/Contents/Resources/cooler.5s.py",
-         "~/Library/Application Support/SwiftBar/Plugins/cooler.5s.py"
-    set_permissions "~/Library/Application Support/SwiftBar/Plugins/cooler.5s.py", "0755", recursive: false
+         "Library/Application Support/SwiftBar/Plugins/cooler.5s.py", target_base: :home
+    set_permissions "Library/Application Support/SwiftBar/Plugins/cooler.5s.py", "0755",
+                    base: :home, recursive: false
     copy "{{appdir}}/Cooler.app/Contents/Resources/com.chetangoel.cooler-monitor.plist",
-         "~/Library/LaunchAgents/com.chetangoel.cooler-monitor.plist"
+         "Library/LaunchAgents/com.chetangoel.cooler-monitor.plist", target_base: :home
     # The editor lived here before it became Cooler.app.
-    remove "~/Library/Application Support/Cooler/Cooler Curves.app", recursive: true
+    remove "Library/Application Support/Cooler/Cooler Curves.app", base: :home, recursive: true
   end
 
   uninstall_postflight_steps do
-    remove ["~/Library/Application Support/SwiftBar/Plugins/cooler.5s.py",
-            "~/Library/LaunchAgents/com.chetangoel.cooler-monitor.plist"]
+    remove ["Library/Application Support/SwiftBar/Plugins/cooler.5s.py",
+            "Library/LaunchAgents/com.chetangoel.cooler-monitor.plist"], base: :home
   end
 
   # Homebrew also runs this before every upgrade; uninstall.sh keeps the profile.
