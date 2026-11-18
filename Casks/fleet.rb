@@ -2,8 +2,8 @@
 # frozen_string_literal: true
 
 cask "fleet" do
-  version "0.1.0"
-  sha256 "cc4321600234abf4b13aa6ad1be3361f63a47a79d812f46ea7fdebd72f49fe47"
+  version "0.1.1"
+  sha256 "9611a8396d4145caeca489f27d1b131a72cfde9a1d83abcfac9eb5472e12a4f9"
 
   url "https://github.com/chetangoel01/fleet/releases/download/v#{version}/Fleet-#{version}.dmg"
   name "Fleet"
@@ -21,8 +21,8 @@ cask "fleet" do
   app "Fleet.app"
 
   # The helper (fleetd) is a launchd job of the user's, so nothing here needs a password.
-  # Install steps cannot talk to launchd. They write the job's file and stop the old helper;
-  # launchd, which already has the job, starts the copy now in Applications.
+  # Install steps cannot talk to launchd, so they only write the job's file. After an upgrade
+  # the running helper finds its file replaced and leaves, and launchd starts the new copy.
   postflight_steps do
     mkdir_p "Library/LaunchAgents", base: :home
     write_file "Library/LaunchAgents/com.chetangoel.fleetd.plist", <<~PLIST, base: :home
@@ -39,7 +39,6 @@ cask "fleet" do
       </dict>
       </plist>
     PLIST
-    terminate_process "fleetd"
   end
 
   uninstall_postflight_steps do
@@ -56,6 +55,8 @@ cask "fleet" do
   caveats <<~EOS
     After the first install on a Mac, start the helper (logging out and in does the same):
       launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.chetangoel.fleetd.plist
-    Upgrades restart it by themselves.
+    macOS then asks once, on that Mac's screen, whether to open Fleet, and the helper waits
+    for the answer. A Mac with nobody at it needs Screen Sharing for that one click.
+    Upgrades need neither step.
   EOS
 end
