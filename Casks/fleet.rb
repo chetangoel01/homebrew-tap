@@ -2,8 +2,8 @@
 # frozen_string_literal: true
 
 cask "fleet" do
-  version "0.2.0"
-  sha256 "ee35f454f415de0e55f4bc206cec6c316e55278a0bc2f5b930bfc5e5d2b992fa"
+  version "0.2.1"
+  sha256 "fd84b243e75b653229478acfad26059bcf90a6c172947c172ba6fbfbfed00174"
 
   url "https://github.com/chetangoel01/fleet/releases/download/v#{version}/Fleet-#{version}.dmg"
   name "Fleet"
